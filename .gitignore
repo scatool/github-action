@@ -1,0 +1,15 @@
+# Ignore macOS system file
+.DS_Store
+
+### Node.JS ###
+.turbo/
+node_modules/
+dist/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/.secrets/
+backend/.env
