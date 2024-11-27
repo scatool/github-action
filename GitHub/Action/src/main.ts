@@ -1,28 +1,25 @@
-const core = require('@actions/core');
-const fs = require('fs');
-const path = require('path');
-const http = require('http');
-const https = require('https');
-const url = require('url');
-
+import * as core from '@actions/core';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as http from 'http';
+import * as https from 'https';
+import * as url from 'url';
 
 /**
  * Makes a GET request to the specified URL using HTTP or HTTPS based on the protocol.
  * @param {string} apiUrl - The URL to fetch data from.
  * @returns {Promise<any>} - A promise that resolves to the parsed JSON response.
  */
-function fetchData(apiUrl) {
+function fetchData(apiUrl: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const parsedUrl = url.parse(apiUrl);
     const protocol = parsedUrl.protocol === 'https:' ? https : http;
-
 
     protocol.get(apiUrl, (res) => {
       let data = '';
 
       core.debug(`Response status code: ${res.statusCode}`);
       core.debug(`Response headers: ${JSON.stringify(res.headers)}`);
-      core.debug(`Response data: ${res.FileList}`);
 
       // Collect response data chunks
       res.on('data', (chunk) => {
@@ -43,33 +40,36 @@ function fetchData(apiUrl) {
   });
 }
 
-async function run() {
+async function run(): Promise<void> {
   try {
     // Get the API URL from the action input
-    const apiUrl = core.getInput('api_url');
-    var response = null;
+    const apiUrl: string = core.getInput('api_url');
+    let response: any;
+
     try {
-        response = await fetchData(apiUrl);
-        console.log('API Response:', response);
-      } catch (error) {
-        console.error('Error:', error.message);
-      }
-    core.debug("Debug message")
-    core.debug('Api Response:', response.fileList);
+      response = await fetchData(apiUrl);
+      console.log('API Response:', response);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+    core.debug('Debug message');
+    core.debug(`Api Response: ${response.fileList}`);
 
     // Fetch file types from the API
-    //const response = await axios.get(apiUrl);
-    const fileTypes = response.fileList;
+    const fileTypes: string[] = response.fileList;
     if (!Array.isArray(fileTypes)) {
-      throw new Error("Invalid API response: 'filetypes' should be an array.");
+      throw new Error("Invalid API response: 'fileList' should be an array.");
     }
     core.info(`File types retrieved: ${fileTypes.join(', ')}`);
 
-    //Till here it works
-
     // Function to recursively find matching files
-    const findFiles = (dir, filenames, extensions) => {
-      let result = [];
+    const findFiles = (
+      dir: string,
+      filenames: string[],
+      extensions: string[]
+    ): string[] => {
+      let result: string[] = [];
       const files = fs.readdirSync(dir);
 
       for (const file of files) {
@@ -77,12 +77,12 @@ async function run() {
         const stat = fs.statSync(fullPath);
 
         if (stat.isDirectory()) {
-            // Skip the node_modules directory
-            if (file === 'node_modules') {
-              continue;
-            }
-            // Recurse into subdirectories
-            result = result.concat(findFiles(fullPath, filenames, extensions));
+          // Skip the node_modules directory
+          if (file === 'node_modules') {
+            continue;
+          }
+          // Recurse into subdirectories
+          result = result.concat(findFiles(fullPath, filenames, extensions));
         } else if (filenames.includes(file) || extensions.includes(path.extname(file))) {
           // Add matching files
           result.push(fullPath);
@@ -92,17 +92,15 @@ async function run() {
     };
 
     // Search the repository for matching files
-    const repositoryRoot = process.env.GITHUB_WORKSPACE || '.';
-    const matchedFiles = findFiles(repositoryRoot, fileTypes, []);
+    const repositoryRoot: string = process.env.GITHUB_WORKSPACE || '.';
+    const matchedFiles: string[] = findFiles(repositoryRoot, fileTypes, []);
 
     // Output the matched files
     core.info(`Matched files: ${matchedFiles.join(', ')}`);
     core.setOutput('files', JSON.stringify(matchedFiles));
   } catch (error) {
-    core.setFailed(error.message);
+    core.setFailed((error as Error).message);
   }
-};
-
-module.exports = {
-  run
 }
+
+export { run };
