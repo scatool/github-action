@@ -5,7 +5,8 @@
     },
     "files": {
       "ignore": [
-        "package.json"
+        "package.json",
+        "**/dist/**"
       ]
     },
     "vcs": {
