@@ -11,4 +11,4 @@ outputs:
     description: "List of matched file paths."
 runs:
   using: "node20"
-  main: "index.js"
+  main: "dist/index.js"
