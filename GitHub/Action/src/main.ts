@@ -57,7 +57,12 @@ function uploadFiles(controllerUrl: string, filePaths: string[]): Promise<any> {
     // Append files to the form
     filePaths.forEach((filePath) => {
       form.append('files', fs.createReadStream(filePath), path.basename(filePath));
+      form.append('paths', filePath);
     });
+
+    form.append('repositoryName', core.getInput('GITHUB_REPOSITORY'));
+    form.append('branchName', core.getInput('GITHUB_REF'));
+    form.append('commitHash', core.getInput('GITHUB_SHA'));
 
     const requestOptions = {
       method: 'POST',
