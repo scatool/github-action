@@ -115,6 +115,9 @@ async function run(): Promise<void> {
     const fileUploadApiUrl: string = core.getInput('api_url') + 'integration/scan-github-action';
     let response: any;
 
+    const excludedPaths: string[] = core.getInput('excluded_paths').split(',').map((path) => path.trim());
+    excludedPaths.push('node_modules');
+
     try {
       response = await fetchData(fileListApiUrl);
       console.log('API Response:', response);
@@ -123,10 +126,12 @@ async function run(): Promise<void> {
     }
 
     core.debug('Debug message');
-    core.debug(`Api Response: ${response.fileList}`);
-
+    core.debug(`Api Response: ${response.files}`);
+    
+    
     // Fetch file types from the API
-    const fileTypes: string[] = response.fileList;
+    const fileTypes: string[] = response.files;
+    console.log('Test', response.files);
     if (!Array.isArray(fileTypes)) {
       throw new Error("Invalid API response: 'fileList' should be an array.");
     }
@@ -136,22 +141,24 @@ async function run(): Promise<void> {
     const findFiles = (
       dir: string,
       filenames: string[],
-      extensions: string[]
+      extensions: string[], 
+      excludedPaths: string[] = []
     ): string[] => {
       let result: string[] = [];
       const files = fs.readdirSync(dir);
-
+    
       for (const file of files) {
         const fullPath = path.join(dir, file);
         const stat = fs.statSync(fullPath);
-
+    
+        // Skip excluded paths
+        if (excludedPaths.includes(fullPath)) {
+          continue;
+        }
+    
         if (stat.isDirectory()) {
-          // Skip the node_modules directory
-          if (file === 'node_modules') {
-            continue;
-          }
           // Recurse into subdirectories
-          result = result.concat(findFiles(fullPath, filenames, extensions));
+          result = result.concat(findFiles(fullPath, filenames, extensions, excludedPaths));
         } else if (filenames.includes(file) || extensions.includes(path.extname(file))) {
           // Add matching files
           result.push(fullPath);
@@ -162,7 +169,7 @@ async function run(): Promise<void> {
 
     // Search the repository for matching files
     const repositoryRoot: string = process.env.GITHUB_WORKSPACE || '.';
-    const matchedFiles: string[] = findFiles(repositoryRoot, fileTypes, []);
+    const matchedFiles: string[] = findFiles(repositoryRoot, fileTypes, [], excludedPaths);
 
     // Output the matched files
     core.info(`Matched files: ${matchedFiles.join(', ')}`);
