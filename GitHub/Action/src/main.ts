@@ -6,6 +6,8 @@ import * as https from 'https';
 import * as url from 'url';
 import FormData from 'form-data';
 
+
+const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB in bytes
 /**
  * Makes a GET request to the specified URL using HTTP or HTTPS based on the protocol.
  * @param {string} apiUrl - The URL to fetch data from.
@@ -160,8 +162,13 @@ async function run(): Promise<void> {
           // Recurse into subdirectories
           result = result.concat(findFiles(fullPath, filenames, extensions, excludedPaths));
         } else if (filenames.includes(file) || extensions.includes(path.extname(file))) {
-          // Add matching files
-          result.push(fullPath);
+          // Check file size
+          if (stat.size <= MAX_FILE_SIZE) {
+            // Add matching files
+            result.push(fullPath);
+          } else {
+            core.setFailed(`File ${fullPath} is larger than 100 MB. Please split it up or exclude it in order to get the action working.`);
+          }
         }
       }
       return result;
