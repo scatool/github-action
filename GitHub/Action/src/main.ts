@@ -39,6 +39,11 @@ function fetchData(apiUrl: string): Promise<any> {
       });
     }).on('error', (error) => {
       reject(new Error(`Request failed: ${error.message}`));
+    })
+    // Abort the request if it takes longer than 10 seconds
+    .setTimeout(10000, () => {
+      core.setFailed("Connection with Server failed. Please try again later.");
+      process.exit();
     });
   });
 }
@@ -102,7 +107,7 @@ function uploadFiles(controllerUrl: string, filePaths: string[]): Promise<any> {
     );
 
     req.on('error', (error) => {
-      reject(new Error(`Request error: ${error.message}`));
+      reject(new Error(`Upload failed - Request error: ${error.message}`));
     });
 
     // Pipe the form data into the request
@@ -120,12 +125,9 @@ async function run(): Promise<void> {
     const excludedPaths: string[] = core.getInput('excluded_paths').split(',').map((path) => path.trim());
     excludedPaths.push('node_modules');
 
-    try {
-      response = await fetchData(fileListApiUrl);
-      console.log('API Response:', response);
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    
+    response = await fetchData(fileListApiUrl);
+    console.log('API Response:', response);
 
     core.debug('Debug message');
     core.debug(`Api Response: ${response.files}`);
@@ -186,8 +188,9 @@ async function run(): Promise<void> {
     const controllerResponse = await uploadFiles(fileUploadApiUrl, matchedFiles);
     core.info(`Controller Response: ${JSON.stringify(controllerResponse)}`);
   } catch (error) {
-    core.setFailed((error as Error).message);
+    core.setFailed(`Action failed with error: ${(error as Error).message}`);
+    process.exit();
   }
 }
 
-export { run };
+export { run, fetchData, uploadFiles };
