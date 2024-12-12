@@ -73,7 +73,10 @@ function uploadFiles(controllerUrl: string, filePaths: string[]): Promise<any> {
 
     const requestOptions = {
       method: 'POST',
-      headers: form.getHeaders(),
+      headers: {
+      ...form.getHeaders(),
+      'API-Key': core.getInput('api_token')
+      },
     };
 
     const newUrl = new URL(controllerUrl);
@@ -98,7 +101,7 @@ function uploadFiles(controllerUrl: string, filePaths: string[]): Promise<any> {
           } else {
             reject(
               new Error(
-                `Failed to upload files. Status: ${res.statusCode}, Response: ${responseData}`
+                `Failed to upload files. Status: ${res.statusCode}, Response: ${responseData}, res: ${res.statusMessage}`
               )
             );
           }
