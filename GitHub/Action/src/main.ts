@@ -4,6 +4,7 @@ import * as path from 'path';
 import uploadFiles from './upload_files';
 import fetchFileList from './fetch_file_list';
 import checkUpload from './check_upload';
+import findFiles from './find_files';
 
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB in bytes
@@ -41,7 +42,7 @@ async function run(): Promise<void> {
     core.info(`File types retrieved: ${uniqueFileTypes.join(', ')}`);
 
     // Function to recursively find matching files
-    const findFiles = (
+    const findsFiles = (
       dir: string,
       filenames: string[],
       extensions: string[], 
@@ -61,7 +62,7 @@ async function run(): Promise<void> {
     
         if (stat.isDirectory()) {
           // Recurse into subdirectories
-          result = result.concat(findFiles(fullPath, filenames, extensions, excludedPaths));
+          result = result.concat(findsFiles(fullPath, filenames, extensions, excludedPaths));
         } else if (filenames.includes(file) || extensions.includes(path.extname(file))) {
           // Check file size
           if (stat.size <= MAX_FILE_SIZE) {
@@ -77,7 +78,10 @@ async function run(): Promise<void> {
 
     // Search the repository for matching files
     const repositoryRoot: string = process.env.GITHUB_WORKSPACE || '.';
-    const matchedFiles: string[] = findFiles(repositoryRoot, uniqueFileTypes, [], excludedPaths);
+    const matchedFiles: string[] = findsFiles(repositoryRoot, uniqueFileTypes, [], excludedPaths);
+
+    const newMethodFiles = await findFiles(repositoryRoot, uniqueFileTypes, excludedPaths.join(','));
+    console.log('New Method Files:', newMethodFiles);
 
     // Check files before upload
     checkUpload(matchedFiles, filepairs);

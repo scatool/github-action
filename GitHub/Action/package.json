@@ -71,7 +71,8 @@
     },
     "dependencies": {
         "@actions/core": "^1.11.1",
-        "axios": "^1.4.0"
+        "axios": "^1.4.0",
+        "fast-glob": "^3.3.3"
     },
     "devDependencies": {
         "@github/local-action": "^2.2.0",
