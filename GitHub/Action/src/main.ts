@@ -16,23 +16,15 @@ async function run(): Promise<void> {
     excludedPaths.push('node_modules/**');
 
     // Fetch file types from the API
-    let filepairs: string[][] = await fetchFileList(fileListApiUrl).then((response) => response.files);
+    let fileGroups: string[][] = await fetchFileList(fileListApiUrl).then((response) => response.files);
     
     // Check the API response
-    if (!Array.isArray(filepairs)) {
+    if (!Array.isArray(fileGroups)) {
       throw new Error("Invalid API response: 'fileList' should be an array.");
     }
 
-    // TODO: Check if it could also only be one file
-    filepairs.forEach((pair) => {
-      console.log('Pair:', pair);
-      if (pair.length < 2) {
-        throw new Error("Invalid API response: Each 'fileList' item should be an array of two strings.");
-      }
-    });
-
     // Get unique file types to easily search for the needed files
-    let uniqueFileTypes = [...new Set(filepairs.flat())]; 
+    let uniqueFileTypes = [...new Set(fileGroups.flat())]; 
     core.info(`File types retrieved: ${uniqueFileTypes.join(', ')}`);
 
     // Search the repository for matching files
@@ -42,7 +34,7 @@ async function run(): Promise<void> {
     console.log('Found files, that will be uploaded:', foundFiles);
 
     // Check files before upload
-    checkUpload(foundFiles, filepairs);
+    checkUpload(foundFiles, fileGroups);
 
     // Output the matched files
     core.setOutput('files', JSON.stringify(foundFiles));
