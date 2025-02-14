@@ -3,6 +3,7 @@ import uploadFiles from './upload_files';
 import fetchFileList from './fetch_file_list';
 import checkUpload from './check_upload';
 import findFiles from './find_files';
+import checkExpirationApiKey from './check_expiration_api_key';
 
 
 async function run(): Promise<void> {
@@ -14,6 +15,9 @@ async function run(): Promise<void> {
     //ensure that the node_modules folder is always excluded as this would lead to a large number of files being uploaded unwantedly
     const excludedPaths: string[] = core.getInput('excluded_paths').split(',').map((path) => path.trim());
     excludedPaths.push('node_modules/**');
+
+    // Make sure the apiKey adhears to the apiKeyPattern and is not expired.
+    checkExpirationApiKey(core.getInput('api_key'));
 
     // Fetch file types from the API
     let fileGroups: string[][] = await fetchFileList(fileListApiUrl).then((response) => response.files);
