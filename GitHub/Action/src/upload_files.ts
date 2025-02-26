@@ -1,10 +1,10 @@
-import * as core from '@actions/core';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as http from 'http';
-import * as https from 'https';
-import * as url from 'url';
-import FormData from 'form-data';
+import * as core from "@actions/core";
+import * as fs from "fs";
+import * as path from "path";
+import * as http from "http";
+import * as https from "https";
+import * as url from "url";
+import FormData from "form-data";
 
 /**
  * Uploads files to the specified controller endpoint.
@@ -13,69 +13,69 @@ import FormData from 'form-data';
  * @returns {Promise<any>} - A promise that resolves to the server response.
  */
 function uploadFiles(controllerUrl: string, filePaths: string[]): Promise<any> {
-  return new Promise((resolve, reject) => {
-    const parsedUrl = url.parse(controllerUrl);
-    const protocol = parsedUrl.protocol === 'https:' ? https : http;
-    
-    const form = new FormData();
+	return new Promise((resolve, reject) => {
+		const parsedUrl = url.parse(controllerUrl);
+		const protocol = parsedUrl.protocol === "https:" ? https : http;
 
-    // Append files to the form
-    filePaths.forEach((filePath) => {
-      form.append('files', fs.createReadStream(filePath), path.basename(filePath));
-      form.append('paths', filePath);
-    });
+		const form = new FormData();
 
-    form.append('repositoryName', core.getInput('GITHUB_REPOSITORY'));
-    form.append('branchName', core.getInput('GITHUB_REF'));
-    form.append('commitHash', core.getInput('GITHUB_SHA'));
-    form.append('codeUnitId', core.getInput('code_unit_id'));
-    form.append('apiKey', core.getInput('api_key'));
+		// Append files to the form
+		filePaths.forEach((filePath) => {
+			form.append("files", fs.createReadStream(filePath), path.basename(filePath));
+			form.append("paths", filePath);
+		});
 
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-      ...form.getHeaders(),
-      'API-Key': core.getInput('api_key')
-      },
-    };
+		form.append("repositoryName", core.getInput("GITHUB_REPOSITORY"));
+		form.append("branchName", core.getInput("GITHUB_REF"));
+		form.append("commitHash", core.getInput("GITHUB_SHA"));
+		form.append("codeUnitId", core.getInput("code_unit_id"));
+		form.append("apiKey", core.getInput("api_key"));
 
-    const newUrl = new URL(controllerUrl);
-    const req = protocol.request(
-      {
-        hostname: newUrl.hostname,
-        port: newUrl.port || 443,
-        path: newUrl.pathname,
-        method: requestOptions.method,
-        headers: requestOptions.headers,
-      },
-      (res) => {
-        let responseData = '';
+		const requestOptions = {
+			method: "POST",
+			headers: {
+				...form.getHeaders(),
+				"API-Key": core.getInput("api_key"),
+			},
+		};
 
-        res.on('data', (chunk) => {
-          responseData += chunk;
-        });
+		const newUrl = new URL(controllerUrl);
+		const req = protocol.request(
+			{
+				hostname: newUrl.hostname,
+				port: newUrl.port || 443,
+				path: newUrl.pathname,
+				method: requestOptions.method,
+				headers: requestOptions.headers,
+			},
+			(res) => {
+				let responseData = "";
 
-        res.on('end', () => {
-          if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-            resolve(responseData);
-          } else {
-            reject(
-              new Error(
-                `Failed to upload files. Status: ${res.statusCode}, Response: ${responseData}, res: ${res.statusMessage}`
-              )
-            );
-          }
-        });
-      }
-    );
+				res.on("data", (chunk) => {
+					responseData += chunk;
+				});
 
-    req.on('error', (error) => {
-      reject(new Error(`Upload failed - Request error: ${error.message}`));
-    });
+				res.on("end", () => {
+					if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+						resolve(responseData);
+					} else {
+						reject(
+							new Error(
+								`Failed to upload files. Status: ${res.statusCode}, Response: ${responseData}, res: ${res.statusMessage}`,
+							),
+						);
+					}
+				});
+			},
+		);
 
-    // Pipe the form data into the request
-    form.pipe(req);
-  });
+		req.on("error", (error) => {
+			reject(new Error(`Upload failed - Request error: ${error.message}`));
+		});
+
+		// Pipe the form data into the request
+		form.pipe(req);
+	});
 }
 
 export default uploadFiles;
