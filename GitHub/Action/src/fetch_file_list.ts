@@ -2,7 +2,6 @@ import * as http from 'http';
 import * as https from 'https';
 import * as url from 'url';
 import * as core from '@actions/core';
-import exp from 'constants';
 
 /**
  * Makes a GET request to the specified URL using HTTP or HTTPS based on the protocol.

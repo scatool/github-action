@@ -8,7 +8,7 @@ inputs:
     default: "http://https://app.scatool.com/api/v1/"
   excluded_paths:
     description: "Comma-separated list of paths to exclude from the scan."
-    required: true
+    required: false
     default: "node_modules/**, dist/**"
   api_key:
     description: "API key for authentication."
@@ -16,7 +16,6 @@ inputs:
   code_unit_id:
     description: "Unique identifier for the code unit."
     required: true
-    default: "5f5b1b3b-7b3b-4b3b-8b3b-9b3b1b3b7b3b"
 outputs:
   string:
     description: "Success string. Later the url of the scan will be added here."
