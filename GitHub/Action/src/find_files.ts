@@ -34,17 +34,4 @@ async function findFiles(
 	return files;
 }
 
-// Example usage
-const baseFolder = "/path/to/search";
-const fileExtensions = [".txt", ".js"]; // Example file types to search for
-const excludeList = core.getInput("excluded_paths");
-
-findFiles(baseFolder, fileExtensions, excludeList)
-	.then((files) => {
-		console.log("Matching files:", files);
-	})
-	.catch((error) => {
-		console.error("Error searching files:", error);
-	});
-
 export default findFiles;

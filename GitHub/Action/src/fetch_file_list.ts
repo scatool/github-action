@@ -3,12 +3,16 @@ import * as https from "node:https";
 import * as url from "node:url";
 import * as core from "@actions/core";
 
+interface FileListResponse {
+	files: string[];
+}
+
 /**
  * Makes a GET request to the specified URL using HTTP or HTTPS based on the protocol.
  * @param {string} apiUrl - The URL to fetch data from.
- * @returns {Promise<any>} - A promise that resolves to the parsed JSON response.
+ * @returns {Promise<FileListResponse>} - A promise that resolves to the parsed JSON response.
  */
-function fetchFileList(apiUrl: string): Promise<any> {
+function fetchFileList(apiUrl: string): Promise<FileListResponse> {
 	return new Promise((resolve, reject) => {
 		const parsedUrl = url.parse(apiUrl);
 		const protocol = parsedUrl.protocol === "https:" ? https : http;
@@ -28,9 +32,10 @@ function fetchFileList(apiUrl: string): Promise<any> {
 				// Resolve the promise when the response ends
 				res.on("end", () => {
 					try {
-						resolve(JSON.parse(data)); // Parse JSON if applicable
+						const parsedData = JSON.parse(data);
+						resolve(parsedData as FileListResponse); // Parse JSON if applicable
 					} catch (error) {
-						resolve(data); // Return raw data if not JSON
+						reject(new Error("Failed to parse JSON response"));
 					}
 				});
 			})

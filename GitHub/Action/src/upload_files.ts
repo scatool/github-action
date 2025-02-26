@@ -12,7 +12,10 @@ import FormData from "form-data";
  * @param {string[]} filePaths - Array of file paths to upload.
  * @returns {Promise<any>} - A promise that resolves to the server response.
  */
-function uploadFiles(controllerUrl: string, filePaths: string[]): Promise<any> {
+function uploadFiles(
+	controllerUrl: string,
+	filePaths: string[],
+): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const parsedUrl = url.parse(controllerUrl);
 		const protocol = parsedUrl.protocol === "https:" ? https : http;
@@ -20,14 +23,14 @@ function uploadFiles(controllerUrl: string, filePaths: string[]): Promise<any> {
 		const form = new FormData();
 
 		// Append files to the form
-		filePaths.forEach((filePath) => {
+		for (const filePath of filePaths) {
 			form.append(
 				"files",
 				fs.createReadStream(filePath),
 				path.basename(filePath),
 			);
 			form.append("paths", filePath);
-		});
+		}
 
 		form.append("repositoryName", core.getInput("GITHUB_REPOSITORY"));
 		form.append("branchName", core.getInput("GITHUB_REF"));
