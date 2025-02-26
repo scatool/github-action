@@ -9,7 +9,11 @@ import path from "path";
  * @param excludePatterns A string containing paths and files to be excluded (similar to .gitignore)
  * @returns A list of matching files.
  */
-async function findFiles(baseDir: string, fileTypes: string[], excludePatterns: string): Promise<string[]> {
+async function findFiles(
+	baseDir: string,
+	fileTypes: string[],
+	excludePatterns: string,
+): Promise<string[]> {
 	// Convert the .gitignore-like pattern string into an array of patterns
 	const excludeRules = excludePatterns
 		.split(",")

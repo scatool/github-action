@@ -5,7 +5,9 @@ function checkExpirationApiKey(apiKey: string): null {
 	const match = apiKey.match(apiKeyPattern);
 
 	if (!match) {
-		core.setFailed("Invalid API key format. Check your apiKey or create a new one.");
+		core.setFailed(
+			"Invalid API key format. Check your apiKey or create a new one.",
+		);
 		process.exit();
 	}
 

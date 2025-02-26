@@ -18,13 +18,17 @@ function checkUpload(fileList: string[], fileTypes: string[][]): void {
 
 	// Check if the file types list is empty
 	if (fileTypes.length === 0) {
-		core.setFailed("Internal Error. Please check for update of action or contact us.");
+		core.setFailed(
+			"Internal Error. Please check for update of action or contact us.",
+		);
 		process.exit();
 	}
 
 	// Check if no file is larger than the maximum file size
 	const maxFileSize = 100 * 1024 * 1024; // 100 MB in bytes
-	const oversizedFiles = fileList.filter((file) => require("fs").statSync(file).size > maxFileSize);
+	const oversizedFiles = fileList.filter(
+		(file) => require("fs").statSync(file).size > maxFileSize,
+	);
 	if (oversizedFiles.length > 0) {
 		core.setFailed(
 			`The following files are larger than the maximum file size of ${maxFileSize} bytes: ${oversizedFiles.join(", ")}`,
@@ -34,7 +38,9 @@ function checkUpload(fileList: string[], fileTypes: string[][]): void {
 
 	// Check if the combinations of at least one filetype list is completely represented in the files
 	let check_passed = fileTypes.some((fileTypeCombi) =>
-		fileTypeCombi.every((fileType) => fileList.some((file) => file.endsWith(fileType))),
+		fileTypeCombi.every((fileType) =>
+			fileList.some((file) => file.endsWith(fileType)),
+		),
 	);
 
 	if (!check_passed) {

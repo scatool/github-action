@@ -8,8 +8,10 @@ import checkExpirationApiKey from "./check_expiration_api_key";
 async function run(): Promise<void> {
 	try {
 		// Get the API URL from the action input
-		const fileListApiUrl: string = core.getInput("api_url") + "integration/file-list";
-		const fileUploadApiUrl: string = core.getInput("api_url") + "integration/scan-github-action";
+		const fileListApiUrl: string =
+			core.getInput("api_url") + "integration/file-list";
+		const fileUploadApiUrl: string =
+			core.getInput("api_url") + "integration/scan-github-action";
 
 		//ensure that the node_modules folder is always excluded as this would lead to a large number of files being uploaded unwantedly
 		const excludedPaths: string[] = core
@@ -22,7 +24,9 @@ async function run(): Promise<void> {
 		checkExpirationApiKey(core.getInput("api_key"));
 
 		// Fetch file types from the API
-		let fileGroups: string[][] = await fetchFileList(fileListApiUrl).then((response) => response.files);
+		let fileGroups: string[][] = await fetchFileList(fileListApiUrl).then(
+			(response) => response.files,
+		);
 
 		// Check the API response
 		if (!Array.isArray(fileGroups)) {
@@ -36,7 +40,11 @@ async function run(): Promise<void> {
 		// Search the repository for matching files
 		const repositoryRoot: string = process.env.GITHUB_WORKSPACE || ".";
 
-		const foundFiles = await findFiles(repositoryRoot, uniqueFileTypes, excludedPaths.join(","));
+		const foundFiles = await findFiles(
+			repositoryRoot,
+			uniqueFileTypes,
+			excludedPaths.join(","),
+		);
 		console.log("Found files, that will be uploaded:", foundFiles);
 
 		// Check files before upload

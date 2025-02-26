@@ -21,7 +21,11 @@ function uploadFiles(controllerUrl: string, filePaths: string[]): Promise<any> {
 
 		// Append files to the form
 		filePaths.forEach((filePath) => {
-			form.append("files", fs.createReadStream(filePath), path.basename(filePath));
+			form.append(
+				"files",
+				fs.createReadStream(filePath),
+				path.basename(filePath),
+			);
 			form.append("paths", filePath);
 		});
 

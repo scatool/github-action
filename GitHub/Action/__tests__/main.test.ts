@@ -27,11 +27,19 @@ describe("action", () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 
-		debugMock = jest.spyOn(core, "debug").mockImplementation(() => Promise.resolve());
-		errorMock = jest.spyOn(core, "error").mockImplementation(() => Promise.resolve());
+		debugMock = jest
+			.spyOn(core, "debug")
+			.mockImplementation(() => Promise.resolve());
+		errorMock = jest
+			.spyOn(core, "error")
+			.mockImplementation(() => Promise.resolve());
 		getInputMock = jest.spyOn(core, "getInput").mockImplementation(() => "");
-		setFailedMock = jest.spyOn(core, "setFailed").mockImplementation(() => Promise.resolve());
-		setOutputMock = jest.spyOn(core, "setOutput").mockImplementation(() => Promise.resolve());
+		setFailedMock = jest
+			.spyOn(core, "setFailed")
+			.mockImplementation(() => Promise.resolve());
+		setOutputMock = jest
+			.spyOn(core, "setOutput")
+			.mockImplementation(() => Promise.resolve());
 	});
 
 	it("sets the time output", async () => {
@@ -49,10 +57,23 @@ describe("action", () => {
 		expect(runMock).toHaveReturned();
 
 		// Verify that all of the core library functions were called correctly
-		expect(debugMock).toHaveBeenNthCalledWith(1, "Waiting 500 milliseconds ...");
-		expect(debugMock).toHaveBeenNthCalledWith(2, expect.stringMatching(timeRegex));
-		expect(debugMock).toHaveBeenNthCalledWith(3, expect.stringMatching(timeRegex));
-		expect(setOutputMock).toHaveBeenNthCalledWith(1, "time", expect.stringMatching(timeRegex));
+		expect(debugMock).toHaveBeenNthCalledWith(
+			1,
+			"Waiting 500 milliseconds ...",
+		);
+		expect(debugMock).toHaveBeenNthCalledWith(
+			2,
+			expect.stringMatching(timeRegex),
+		);
+		expect(debugMock).toHaveBeenNthCalledWith(
+			3,
+			expect.stringMatching(timeRegex),
+		);
+		expect(setOutputMock).toHaveBeenNthCalledWith(
+			1,
+			"time",
+			expect.stringMatching(timeRegex),
+		);
 		expect(errorMock).not.toHaveBeenCalled();
 	});
 
@@ -71,7 +92,10 @@ describe("action", () => {
 		expect(runMock).toHaveReturned();
 
 		// Verify that all of the core library functions were called correctly
-		expect(setFailedMock).toHaveBeenNthCalledWith(1, "milliseconds not a number");
+		expect(setFailedMock).toHaveBeenNthCalledWith(
+			1,
+			"milliseconds not a number",
+		);
 		expect(errorMock).not.toHaveBeenCalled();
 	});
 });

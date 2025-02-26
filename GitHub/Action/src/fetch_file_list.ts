@@ -39,7 +39,9 @@ function fetchFileList(apiUrl: string): Promise<any> {
 			})
 			// Abort the request if it takes longer than 10 seconds
 			.setTimeout(10000, () => {
-				core.setFailed("Connection with Server failed. Please try again later.");
+				core.setFailed(
+					"Connection with Server failed. Please try again later.",
+				);
 				process.exit();
 			});
 	});
