@@ -1,14 +1,25 @@
 name: "SCA Tool - GitHub Action"
-description: "Send your project automated to SCA Tool via this GitHub Action to get a full view of the satus of your project without the need to manually start a scan."
+description: "Send your project automated to SCA Tool via this GitHub Action to get a full view of the status of your project without the need to manually start a scan."
 author: "SCA Tool"
 inputs:
   api_url:
     description: "The URL of the API to fetch file extensions."
+    required: false
+    default: "http://https://app.scatool.com/api/v1/"
+  excluded_paths:
+    description: "Comma-separated list of paths to exclude from the scan."
     required: true
-    default: "https://app.scatool.com/api/integration/file-list"
+    default: "node_modules/**, dist/**"
+  api_key:
+    description: "API key for authentication."
+    required: true
+  code_unit_id:
+    description: "Unique identifier for the code unit."
+    required: true
+    default: "5f5b1b3b-7b3b-4b3b-8b3b-9b3b1b3b7b3b"
 outputs:
-  files:
-    description: "List of matched file paths."
+  string:
+    description: "Success string. Later the url of the scan will be added here."
 runs:
   using: "node20"
   main: "dist/index.js"
