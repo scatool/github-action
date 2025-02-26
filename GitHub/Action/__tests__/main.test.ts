@@ -7,8 +7,8 @@
  */
 
 import * as core from "@actions/core";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as main from "../src/main";
-import { jest, describe, beforeEach, expect, it } from "@jest/globals";
 
 // Mock the action's main function
 const runMock = jest.spyOn(main, "run");

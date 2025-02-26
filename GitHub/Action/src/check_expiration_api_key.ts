@@ -21,7 +21,7 @@ function checkExpirationApiKey(apiKey: string): null {
 
 	if (expirationDate < today) {
 		core.setFailed(
-			`The API key provided has expired. Please create a new one in the organization settings. After creating a new one, make sure to update the API key in the GitHub Secrets.`,
+			"The API key provided has expired. Please create a new one in the organization settings. After creating a new one, make sure to update the API key in the GitHub Secrets.",
 		);
 		process.exit();
 	}

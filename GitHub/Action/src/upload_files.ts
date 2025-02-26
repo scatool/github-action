@@ -1,9 +1,9 @@
+import * as fs from "node:fs";
+import * as http from "node:http";
+import * as https from "node:https";
+import * as path from "node:path";
+import * as url from "node:url";
 import * as core from "@actions/core";
-import * as fs from "fs";
-import * as path from "path";
-import * as http from "http";
-import * as https from "https";
-import * as url from "url";
 import FormData from "form-data";
 
 /**

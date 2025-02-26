@@ -1,6 +1,6 @@
-import * as http from "http";
-import * as https from "https";
-import * as url from "url";
+import * as http from "node:http";
+import * as https from "node:https";
+import * as url from "node:url";
 import * as core from "@actions/core";
 
 /**

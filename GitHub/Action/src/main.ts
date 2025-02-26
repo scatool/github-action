@@ -1,17 +1,15 @@
 import * as core from "@actions/core";
-import uploadFiles from "./upload_files";
-import fetchFileList from "./fetch_file_list";
-import checkUpload from "./check_upload";
-import findFiles from "./find_files";
 import checkExpirationApiKey from "./check_expiration_api_key";
+import checkUpload from "./check_upload";
+import fetchFileList from "./fetch_file_list";
+import findFiles from "./find_files";
+import uploadFiles from "./upload_files";
 
 async function run(): Promise<void> {
 	try {
 		// Get the API URL from the action input
-		const fileListApiUrl: string =
-			core.getInput("api_url") + "integration/file-list";
-		const fileUploadApiUrl: string =
-			core.getInput("api_url") + "integration/scan-github-action";
+		const fileListApiUrl: string = `${core.getInput("api_url")}integration/file-list`;
+		const fileUploadApiUrl: string = `${core.getInput("api_url")}integration/scan-github-action`;
 
 		//ensure that the node_modules folder is always excluded as this would lead to a large number of files being uploaded unwantedly
 		const excludedPaths: string[] = core
@@ -24,7 +22,7 @@ async function run(): Promise<void> {
 		checkExpirationApiKey(core.getInput("api_key"));
 
 		// Fetch file types from the API
-		let fileGroups: string[][] = await fetchFileList(fileListApiUrl).then(
+		const fileGroups: string[][] = await fetchFileList(fileListApiUrl).then(
 			(response) => response.files,
 		);
 
@@ -34,7 +32,7 @@ async function run(): Promise<void> {
 		}
 
 		// Get unique file types to easily search for the needed files
-		let uniqueFileTypes = [...new Set(fileGroups.flat())];
+		const uniqueFileTypes = [...new Set(fileGroups.flat())];
 		core.info(`File types retrieved: ${uniqueFileTypes.join(", ")}`);
 
 		// Search the repository for matching files

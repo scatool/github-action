@@ -27,7 +27,7 @@ function checkUpload(fileList: string[], fileTypes: string[][]): void {
 	// Check if no file is larger than the maximum file size
 	const maxFileSize = 100 * 1024 * 1024; // 100 MB in bytes
 	const oversizedFiles = fileList.filter(
-		(file) => require("fs").statSync(file).size > maxFileSize,
+		(file) => require("node:fs").statSync(file).size > maxFileSize,
 	);
 	if (oversizedFiles.length > 0) {
 		core.setFailed(
@@ -37,7 +37,7 @@ function checkUpload(fileList: string[], fileTypes: string[][]): void {
 	}
 
 	// Check if the combinations of at least one filetype list is completely represented in the files
-	let check_passed = fileTypes.some((fileTypeCombi) =>
+	const check_passed = fileTypes.some((fileTypeCombi) =>
 		fileTypeCombi.every((fileType) =>
 			fileList.some((file) => file.endsWith(fileType)),
 		),

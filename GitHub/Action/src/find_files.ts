@@ -1,6 +1,5 @@
 import * as core from "@actions/core";
 import fg from "fast-glob";
-import path from "path";
 
 /**
  * Recursively searches for specific file types in a folder, allowing exclusions.
