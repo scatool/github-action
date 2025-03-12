@@ -71,6 +71,7 @@
     },
     "dependencies": {
         "@actions/core": "^1.11.1",
+        "@actions/github": "^5.0.0",
         "axios": "^1.4.0",
         "fast-glob": "^3.3.3"
     },

@@ -4,6 +4,7 @@ import * as https from "node:https";
 import * as path from "node:path";
 import * as url from "node:url";
 import * as core from "@actions/core";
+import * as github from "@actions/github";
 import FormData from "form-data";
 
 /**
@@ -31,10 +32,10 @@ function uploadFiles(
 			);
 			form.append("paths", filePath);
 		}
-
-		form.append("repositoryName", core.getInput("GITHUB_REPOSITORY"));
-		form.append("branchName", core.getInput("GITHUB_REF"));
-		form.append("commitHash", core.getInput("GITHUB_SHA"));
+	
+		form.append("repositoryName", github.context.repo.owner+"/"+github.context.repo.repo);
+		form.append("branchName", github.context.ref);
+		form.append("commitHash", github.context.sha);
 		form.append("codeUnitId", core.getInput("code_unit_id"));
 		form.append("apiKey", core.getInput("api_key"));
 

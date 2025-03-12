@@ -4,7 +4,7 @@ import * as url from "node:url";
 import * as core from "@actions/core";
 
 interface FileListResponse {
-	files: string[];
+	files: string[][];
 }
 
 /**
