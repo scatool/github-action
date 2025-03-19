@@ -30,12 +30,13 @@ function uploadFiles(
 				fs.createReadStream(filePath),
 				path.basename(filePath),
 			);
-			form.append("paths", filePath);
+			form.append("paths", path.relative(process.cwd(), filePath).replace(/\\/g, "/"));
 		}
 	
 		form.append("repositoryName", github.context.repo.owner+"/"+github.context.repo.repo);
 		form.append("branchName", github.context.ref);
 		form.append("commitHash", github.context.sha);
+		form.append("runNumber", process.env.GITHUB_RUN_ATTEMPT);
 		form.append("codeUnitId", core.getInput("code_unit_id"));
 		form.append("apiKey", core.getInput("api_key"));
 
