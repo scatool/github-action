@@ -16,6 +16,9 @@ inputs:
   code_unit_id:
     description: "Unique identifier for the code unit."
     required: true
+  github_token:
+    description: "GitHub token to post the link to the result as comment when possible. If not specified, the link will only be pronted in the console."
+    required: false
 outputs:
   string:
     description: "Success string. Later the url of the scan will be added here."

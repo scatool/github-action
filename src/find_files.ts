@@ -18,7 +18,7 @@ async function findFiles(
 		.split(",")
 		.map((rule) => rule.trim().replace(/^\/+/, ""))
 		.filter((rule) => rule && !rule.startsWith("#"))
-		.filter((rule) => rule.length > 0); // Remove empty entries;
+		.filter((rule) => rule.length > 0) // Remove empty entries;
 
 	// Generate file patterns to search for
 	const filePatterns = fileTypes.map((ext) => `**/*${ext}`);
@@ -31,7 +31,7 @@ async function findFiles(
 		onlyFiles: true, // Ensures only files are returned (not directories)
 	});
 
-	return files;
+	return files.filter((file) => file.includes("node_modules") === false);
 }
 
 export default findFiles;

@@ -1,4 +1,5 @@
 import * as core from "@actions/core";
+import * as github from "@actions/github";
 import checkExpirationApiKey from "./check_expiration_api_key";
 import checkUpload from "./check_upload";
 import fetchFileList from "./fetch_file_list";
@@ -53,6 +54,22 @@ async function run(): Promise<void> {
 
 		// Send matched files to the controller
 		const controllerResponse = await uploadFiles(fileUploadApiUrl, foundFiles);
+
+		// If the GITHUB_TOKEN is set and we the action was triggered inside an PullRequest, try to create a comment with the url to scatool
+		const githubToken = core.getInput("github_token");
+		if ( githubToken != "" && github.context.payload.pull_request != null ) {
+			// TODO: Adjust the url when needed
+			const octokit = github.getOctokit(githubToken);
+			const prNumber = github.context.payload.pull_request.number;
+			const repo = github.context.repo;
+			const comment = `The files have been uploaded to the SCATool. You can find the results [here](https://scatool.sca.com/scan/${controllerResponse}).`;
+			await octokit.rest.issues.createComment({
+				...repo,
+				issue_number: prNumber,
+				body: comment,
+			});
+		}
+
 		core.info(`Controller Response: ${JSON.stringify(controllerResponse)}`);
 	} catch (error) {
 		core.setFailed(`Action failed with error: ${(error as Error).message}`);

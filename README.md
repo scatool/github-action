@@ -22,6 +22,7 @@ The action performs the following steps:
 4. **Find Files**: Searches the repository for files matching the fetched file types, excluding specified paths.
 5. **Check Upload**: Verifies that the necessary files are present and not oversized before uploading.
 6. **Upload Files**: Sends the matched files to the controller.
+7. **Link to Results**: Either prints the link as text in the execution log, or with an added GitHub Token Secret, comments it to an Pull Request
 
 
 ## Exclusion List
@@ -51,13 +52,14 @@ jobs:
                     api_key: ${{ secrets.SCA_TOOL_API_KEY }}
                     distribution_id: 'aaaa-aaaa-aaaa-aaaa'
                     excluded_paths: 'node_modules/**, Readme.md, test/package.json'
+                    github_token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Parameters and Expected Values
 
-- `api_url`: The base URL of the SCA Tool API.
 - `api_key`: The API key for authenticating with the SCA Tool API.
 - `excluded_paths`: Comma-separated list of paths to exclude from the scan.
+- `github_token`: If you want the link to the results of the scan to be commented on a Pull Request, please add the GitHub Token. THis parameter is optional. Without it or in case of an error creating the comment, the link will still be printed in the console log of the action.
 
 ## Internal-Publishing New Version of Action to GitHub
 
@@ -71,3 +73,6 @@ npx @biomejs/biome format --write
 
 For running linter use:
 npx @biomejs/biome lint --write
+
+If wanting to send the data to an alternative server, you can add an additional parameter to the action configuration:
+- `api_url`: The base URL of the SCA Tool API. This only needs to be adapted, for testing services
