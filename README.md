@@ -1,4 +1,5 @@
 # SCA Tool - GitHub Action
+
 We are on a mission to make open-source software in products and projects safe, easy, and fun to use.
 
 This is the GitHub-Action to interact with the SCA Tool API and start a scan of your repository automated with workflows.
@@ -24,10 +25,10 @@ The action performs the following steps:
 6. **Upload Files**: Sends the matched files to the controller.
 7. **Link to Results**: Either prints the link as text in the execution log, or with an added GitHub Token Secret, comments it to an Pull Request
 
-
 ## Exclusion List
 
 The exclusion list should be files and paths relative to the baseDir of your repository.
+
 - Example for folders: `node_modules/**`
 - Example for file types: `Readme.md` or `*.kt`
 - Example for a specific file in a subfolder: `test/package.json`
@@ -50,7 +51,7 @@ jobs:
                 uses: scatool/sca-tool-action@v1
                 with:
                     api_key: ${{ secrets.SCA_TOOL_API_KEY }}
-                    distribution_id: 'aaaa-aaaa-aaaa-aaaa'
+                    code_unit_id: 'aaaa-aaaa-aaaa-aaaa'
                     excluded_paths: 'node_modules/**, Readme.md, test/package.json'
                     github_token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -69,10 +70,11 @@ jobs:
 4. Tag the release with the version number (e.g., `v1.0.1`).
 
 To run formatting use:
-npx @biomejs/biome format --write 
+npx @biomejs/biome format --write
 
 For running linter use:
 npx @biomejs/biome lint --write
 
 If wanting to send the data to an alternative server, you can add an additional parameter to the action configuration:
+
 - `api_url`: The base URL of the SCA Tool API. This only needs to be adapted, for testing services

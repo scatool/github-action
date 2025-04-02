@@ -5,7 +5,7 @@ inputs:
   api_url:
     description: "The URL of the API to fetch file extensions."
     required: false
-    default: "http://https://app.scatool.com/api/v1/"
+    default: "https://app.scatool.com/api/v1/"
   excluded_paths:
     description: "Comma-separated list of paths to exclude from the scan."
     required: false
