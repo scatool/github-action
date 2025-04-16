@@ -1,7 +1,7 @@
 # SCA Tool - GitHub Action
 
-[!CAUTION]
-Still in early developement. Use at your own risk. For more information see [scatool.com](https://scatool.com)
+>[!CAUTION]
+>Still in early developement. Use at your own risk. For more information see [scatool.com](https://scatool.com)
 
 We are on a mission to make open-source software in products and projects safe, easy, and fun to use.
 
