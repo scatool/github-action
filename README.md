@@ -1,12 +1,15 @@
 # SCA Tool - GitHub Action
 
+[!CAUTION]
+Still in early developement. Use at your own risk. For more information see [scatool.com](https://scatool.com)
+
 We are on a mission to make open-source software in products and projects safe, easy, and fun to use.
 
 This is the GitHub-Action to interact with the SCA Tool API and start a scan of your repository automated with workflows.
 
 ## Getting Started
 
-To get started visit [app.scatool.com](https://app.scatool.com) and create a new project and Distribution Unit. Additionally create an API-Key in your Organizartions Setting, subsection 'API Key'. The API-Key as well as the Distribution Unit Id are needed, in order to correctly identify, to which Distribuiton Unit a Upload is created.
+To get started visit [app.scatool.com](https://app.scatool.com), create a account and create a new project and Distribution Unit. Additionally create an API-Key in your Organizartions Setting, subsection 'API Key'. The API-Key as well as the Distribution Unit Id are needed, in order to correctly identify, to which Distribuiton Unit a Upload is created.
 For security reasons, we recommend adding the API-Key as a GitHub-Secret rather than writing your API-Key directly into the workflow, as it can lead to abuse if it is published.
 
 If for some reason you publish your API-Key, you can invalidate the old one and create a new one on the same page, you created the old API-Key. Just make sure to Invalidate the correct one. Therefore use the name of the API-Key to identify the correct one.
