@@ -1,8 +1,9 @@
 name: "SCA Tool - GitHub Action"
 description: "Send your project to SCA Tool to get a full view of the status of your project without the need to manually start a scan."
 author: "SCA Tool"
-icon;: "arrow-up-circle"
-color: "green"
+branding:
+  icon: "arrow-up-circle"
+  color: "green"
 inputs:
   api_url:
     description: "The URL of the API to fetch file extensions."
