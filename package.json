@@ -1,6 +1,6 @@
 {
   "name": "sca-tool-action",
-  "description": "Send your project automated to SCA Tool via this GitHub Action to get a full view of the satus of your project without the need to manually start a scan.",
+  "description": "Send your project to SCA Tool to get a full view of the status of your project without the need to manually start a scan.",
   "version": "0.2.2",
   "author": "SCA-Tool",
   "private": true,
