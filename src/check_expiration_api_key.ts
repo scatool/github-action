@@ -1,6 +1,13 @@
 import * as core from "@actions/core";
 
 function checkExpirationApiKey(apiKey: string): null {
+  if (!apiKey) {
+    core.setFailed(
+      "No API key provided. Please set the api_key input in your workflow and repository secrets.",
+    );
+    process.exit();
+  }
+
   const apiKeyPattern = /^sca(\d{4}-\d{2}-\d{2})tool([a-zA-Z0-9_-]+)$/;
   const match = apiKey.match(apiKeyPattern);
 

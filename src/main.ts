@@ -62,7 +62,7 @@ async function run(): Promise<void> {
       const octokit = github.getOctokit(githubToken);
       const prNumber = github.context.payload.pull_request.number;
       const repo = github.context.repo;
-      const comment = `The files have been uploaded to the SCATool. You can find the results [here](https://scatool.sca.com/scan/${controllerResponse}).`;
+      const comment = `${controllerResponse}.`;
       await octokit.rest.issues.createComment({
         ...repo,
         issue_number: prNumber,

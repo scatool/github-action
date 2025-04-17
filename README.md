@@ -1,7 +1,7 @@
 # SCA Tool - GitHub Action
 
->[!CAUTION]
->Still in early developement. Use at your own risk. For more information see [scatool.com](https://scatool.com)
+> [!CAUTION]
+> Still in early developement. Use at your own risk. For more information see [scatool.com](https://scatool.com)
 
 We are on a mission to make open-source software in products and projects safe, easy, and fun to use.
 
@@ -67,10 +67,11 @@ jobs:
 
 ## Internal-Publishing New Version of Action to GitHub
 
-1. Update the version number in `action.yml`.
-2. Commit and push the changes.
-3. Create a new release on GitHub with the updated version number.
-4. Tag the release with the version number (e.g., `v1.0.1`).
+1. Update the version number in `package.json`.
+2. run `npm run bundle` to bundle the changes into the dist folder
+3. Commit and push the changes.
+4. Create a new release on GitHub with the updated version number.
+5. Tag the release with the version number (e.g., `v1.0.1`).
 
 To run formatting use:
 npx @biomejs/biome format --write

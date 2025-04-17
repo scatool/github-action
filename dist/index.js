@@ -38713,6 +38713,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(7484));
 function checkExpirationApiKey(apiKey) {
+    if (!apiKey) {
+        core.setFailed("No API key provided. Please set the api_key input in your workflow and repository secrets.");
+        process.exit();
+    }
     const apiKeyPattern = /^sca(\d{4}-\d{2}-\d{2})tool([a-zA-Z0-9_-]+)$/;
     const match = apiKey.match(apiKeyPattern);
     if (!match) {
@@ -39008,7 +39012,7 @@ async function run() {
             const octokit = github.getOctokit(githubToken);
             const prNumber = github.context.payload.pull_request.number;
             const repo = github.context.repo;
-            const comment = `The files have been uploaded to the SCATool. You can find the results [here](https://scatool.sca.com/scan/${controllerResponse}).`;
+            const comment = `${controllerResponse}.`;
             await octokit.rest.issues.createComment({
                 ...repo,
                 issue_number: prNumber,
