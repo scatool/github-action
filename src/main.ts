@@ -62,7 +62,12 @@ async function run(): Promise<void> {
       const octokit = github.getOctokit(githubToken);
       const prNumber = github.context.payload.pull_request.number;
       const repo = github.context.repo;
-      const comment = `${controllerResponse}.`;
+      const details = foundFiles.map((file) => `- ${file}`).join("\n");
+      const comment = `${controllerResponse} \n 
+        <details>
+          <summary>Uploaded Files</summary>
+          ${details}
+        </details>`;
       await octokit.rest.issues.createComment({
         ...repo,
         issue_number: prNumber,
@@ -70,7 +75,9 @@ async function run(): Promise<void> {
       });
     }
 
-    core.info(`Controller Response: ${JSON.stringify(controllerResponse)}`);
+    core.info(
+      `Controller Response: \n ${JSON.stringify(controllerResponse, null, 2).replace(/\\n/g, "\n")}`,
+    );
   } catch (error) {
     core.setFailed(`Action failed with error: ${(error as Error).message}`);
     process.exit();
