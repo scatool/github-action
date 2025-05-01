@@ -63,8 +63,7 @@ async function run(): Promise<void> {
       const prNumber = github.context.payload.pull_request.number;
       const repo = github.context.repo;
       const details = foundFiles.map((file) => `- ${file}`).join("\n");
-      const comment = `${controllerResponse} \n 
-        <details>
+      const comment = `${controllerResponse}\n<details>
           <summary>Uploaded Files</summary>
           ${details}
         </details>`;

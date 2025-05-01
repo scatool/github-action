@@ -39013,8 +39013,7 @@ async function run() {
             const prNumber = github.context.payload.pull_request.number;
             const repo = github.context.repo;
             const details = foundFiles.map((file) => `- ${file}`).join("\n");
-            const comment = `${controllerResponse} \n 
-        <details>
+            const comment = `${controllerResponse}\n<details>
           <summary>Uploaded Files</summary>
           ${details}
         </details>`;
@@ -39095,7 +39094,7 @@ function uploadFiles(controllerUrl, filePaths) {
         form.append("branchName", github.context.ref);
         form.append("commitHash", github.context.sha);
         form.append("runNumber", process.env.GITHUB_RUN_ATTEMPT);
-        form.append("codeUnitId", core.getInput("code_unit_id"));
+        form.append("projectId", core.getInput("project_id"));
         form.append("apiKey", core.getInput("api_key"));
         const requestOptions = {
             method: "POST",

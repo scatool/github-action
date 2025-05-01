@@ -16,8 +16,8 @@ inputs:
   api_key:
     description: "API key for authentication."
     required: true
-  code_unit_id:
-    description: "Unique identifier for the code unit."
+  project_id:
+    description: "Unique identifier for the project."
     required: true
   github_token:
     description: "GitHub token to post the link to the result as comment when possible. If not specified, the link will only be pronted in the console."

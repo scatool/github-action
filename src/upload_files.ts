@@ -43,7 +43,7 @@ function uploadFiles(
     form.append("branchName", github.context.ref);
     form.append("commitHash", github.context.sha);
     form.append("runNumber", process.env.GITHUB_RUN_ATTEMPT);
-    form.append("codeUnitId", core.getInput("code_unit_id"));
+    form.append("projectId", core.getInput("project_id"));
     form.append("apiKey", core.getInput("api_key"));
 
     const requestOptions = {

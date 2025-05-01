@@ -54,7 +54,7 @@ jobs:
                 uses: scatool/sca-tool-action@v1
                 with:
                     api_key: ${{ secrets.SCA_TOOL_API_KEY }}
-                    code_unit_id: 'aaaa-aaaa-aaaa-aaaa'
+                    project_id: 'aaaa-aaaa-aaaa-aaaa'
                     excluded_paths: 'node_modules/**, Readme.md, test/package.json'
                     github_token: ${{ secrets.GITHUB_TOKEN }}
 ```
