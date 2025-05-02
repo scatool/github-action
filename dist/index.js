@@ -39104,9 +39104,10 @@ function uploadFiles(controllerUrl, filePaths) {
             },
         };
         const newUrl = new URL(controllerUrl);
+        console.log(newUrl);
         const req = protocol.request({
             hostname: newUrl.hostname,
-            port: newUrl.port || 443,
+            port: newUrl.port || 80,
             path: newUrl.pathname,
             method: requestOptions.method,
             headers: requestOptions.headers,
@@ -39120,6 +39121,8 @@ function uploadFiles(controllerUrl, filePaths) {
                     resolve(responseData);
                 }
                 else {
+                    //console.info(req);
+                    console.log(res);
                     reject(new Error(`Failed to upload files. Status: ${res.statusCode}, Response: ${responseData}, res: ${res.statusMessage}`));
                 }
             });

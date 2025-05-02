@@ -55,10 +55,11 @@ function uploadFiles(
     };
 
     const newUrl = new URL(controllerUrl);
+    console.log(newUrl);
     const req = protocol.request(
       {
         hostname: newUrl.hostname,
-        port: newUrl.port || 443,
+        port: newUrl.port || 80,
         path: newUrl.pathname,
         method: requestOptions.method,
         headers: requestOptions.headers,
@@ -74,6 +75,8 @@ function uploadFiles(
           if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
             resolve(responseData);
           } else {
+            //console.info(req);
+            console.log(res);
             reject(
               new Error(
                 `Failed to upload files. Status: ${res.statusCode}, Response: ${responseData}, res: ${res.statusMessage}`,
