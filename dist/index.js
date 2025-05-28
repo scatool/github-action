@@ -38977,7 +38977,7 @@ async function run() {
     try {
         // Get the API URL from the action input
         const fileListApiUrl = `${core.getInput("api_url")}integration/file-list`;
-        const fileUploadApiUrl = `${core.getInput("api_url")}integration/scan-github-action`;
+        const fileUploadApiUrl = `${core.getInput("api_url")}integration/ci-triggered-upload`;
         //ensure that the node_modules folder is always excluded as this would lead to a large number of files being uploaded unwantedly
         const excludedPaths = core
             .getInput("excluded_paths")
