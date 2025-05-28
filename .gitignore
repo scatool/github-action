@@ -107,3 +107,6 @@ __tests__/runner/*
 /.secrets/
 backend/.env
 *.code-workspace
+
+#ignore changes to env file
+.env.testing
