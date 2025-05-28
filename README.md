@@ -5,7 +5,7 @@
 
 We are on a mission to make open-source software in products and projects safe, easy, and fun to use.
 
-This is the GitHub-Action to interact with the SCA Tool API and start a scan of your repository automated with workflows.
+This is the GitHub-Action to interact with the SCA Tool API and start a scan of your repository automated with workflows. We only upload dependency files, that our Scanner & Analyzer can process. No application logic is uploaded.
 
 ## Getting Started
 
@@ -51,7 +51,7 @@ jobs:
                 uses: actions/checkout@v2
 
             - name: Run SCA Tool Scan
-                uses: scatool/sca-tool-action@v1
+                uses: scatool/sca-tool-action@v1.0.0
                 with:
                     api_key: ${{ secrets.SCA_TOOL_API_KEY }}
                     project_id: 'aaaa-aaaa-aaaa-aaaa'
