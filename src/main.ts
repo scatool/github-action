@@ -1,10 +1,10 @@
 import * as core from "@actions/core";
-import * as github from "@actions/github";
 import checkExpirationApiKey from "./check_expiration_api_key";
 import checkUpload from "./check_upload";
 import fetchFileList from "./fetch_file_list";
 import findFiles from "./find_files";
 import uploadFiles from "./upload_files";
+import postComment from "./post_comment";
 
 async function run(): Promise<void> {
   try {
@@ -55,24 +55,7 @@ async function run(): Promise<void> {
     // Send matched files to the controller
     const controllerResponse = await uploadFiles(fileUploadApiUrl, foundFiles);
 
-    // If the GITHUB_TOKEN is set and we the action was triggered inside an PullRequest, try to create a comment with the url to scatool
-    const githubToken = core.getInput("github_token");
-    if (githubToken != "" && github.context.payload.pull_request != null) {
-      // TODO: Adjust the url when needed
-      const octokit = github.getOctokit(githubToken);
-      const prNumber = github.context.payload.pull_request.number;
-      const repo = github.context.repo;
-      const details = foundFiles.map((file) => `- ${file}`).join("\n");
-      const comment = `${controllerResponse}\n<details>
-          <summary>Uploaded Files</summary>
-          ${details}
-        </details>`;
-      await octokit.rest.issues.createComment({
-        ...repo,
-        issue_number: prNumber,
-        body: comment,
-      });
-    }
+    await postComment(controllerResponse, foundFiles);
 
     core.info(
       `Controller Response: \n ${JSON.stringify(controllerResponse, null, 2).replace(/\\n/g, "\n")}`,

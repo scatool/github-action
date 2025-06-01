@@ -38967,12 +38967,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = run;
 const core = __importStar(__nccwpck_require__(7484));
-const github = __importStar(__nccwpck_require__(3228));
 const check_expiration_api_key_1 = __importDefault(__nccwpck_require__(4728));
 const check_upload_1 = __importDefault(__nccwpck_require__(419));
 const fetch_file_list_1 = __importDefault(__nccwpck_require__(8803));
 const find_files_1 = __importDefault(__nccwpck_require__(3736));
 const upload_files_1 = __importDefault(__nccwpck_require__(5998));
+const post_comment_1 = __importDefault(__nccwpck_require__(7707));
 async function run() {
     try {
         // Get the API URL from the action input
@@ -39005,24 +39005,7 @@ async function run() {
         core.setOutput("files", JSON.stringify(foundFiles));
         // Send matched files to the controller
         const controllerResponse = await (0, upload_files_1.default)(fileUploadApiUrl, foundFiles);
-        // If the GITHUB_TOKEN is set and we the action was triggered inside an PullRequest, try to create a comment with the url to scatool
-        const githubToken = core.getInput("github_token");
-        if (githubToken != "" && github.context.payload.pull_request != null) {
-            // TODO: Adjust the url when needed
-            const octokit = github.getOctokit(githubToken);
-            const prNumber = github.context.payload.pull_request.number;
-            const repo = github.context.repo;
-            const details = foundFiles.map((file) => `- ${file}`).join("\n");
-            const comment = `${controllerResponse}\n<details>
-          <summary>Uploaded Files</summary>
-          ${details}
-        </details>`;
-            await octokit.rest.issues.createComment({
-                ...repo,
-                issue_number: prNumber,
-                body: comment,
-            });
-        }
+        await (0, post_comment_1.default)(controllerResponse, foundFiles);
         core.info(`Controller Response: \n ${JSON.stringify(controllerResponse, null, 2).replace(/\\n/g, "\n")}`);
     }
     catch (error) {
@@ -39030,6 +39013,69 @@ async function run() {
         process.exit();
     }
 }
+
+
+/***/ }),
+
+/***/ 7707:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__nccwpck_require__(7484));
+const github = __importStar(__nccwpck_require__(3228));
+/**
+ * Recursively searches for specific file types in a folder, allowing exclusions.
+ * @param message The message that should be posted as a comment.
+ * @param fileTypes Array of file extensions to include (e.g., ['.txt', '.js'])
+ * @returns null
+ */
+async function postComment(message, foundFiles) {
+    // If the GITHUB_TOKEN is set and we the action was triggered inside an PullRequest, try to create a comment with the url to scatool
+    const githubToken = core.getInput("github_token");
+    if (githubToken != "" && github.context.payload.pull_request != null) {
+        // TODO: Adjust the url when needed
+        const octokit = github.getOctokit(githubToken);
+        const prNumber = github.context.payload.pull_request.number;
+        const repo = github.context.repo;
+        const details = foundFiles.map((file) => `- ${file}`).join("\n");
+        const comment = `${message}\n<details>
+          <summary>Uploaded Files</summary>
+          ${details}
+        </details>`;
+        await octokit.rest.issues.createComment({
+            ...repo,
+            issue_number: prNumber,
+            body: comment,
+        });
+    }
+    return null;
+}
+exports["default"] = postComment;
 
 
 /***/ }),
