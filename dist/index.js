@@ -39137,7 +39137,7 @@ function uploadFiles(controllerUrl, filePaths) {
             form.append("paths", path.relative(process.cwd(), filePath).replace(/\\/g, "/"));
         }
         form.append("repositoryName", github.context.repo.owner + "/" + github.context.repo.repo);
-        form.append("branchName", github.context.ref);
+        form.append("refName", github.context.ref);
         form.append("commitHash", github.context.sha);
         form.append("projectId", core.getInput("project_id"));
         form.append("apiKey", core.getInput("api_key"));
