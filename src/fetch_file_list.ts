@@ -1,7 +1,7 @@
 import * as http from "node:http";
 import * as https from "node:https";
 import * as url from "node:url";
-import * as core from "@actions/core";
+import * as ps from "./platform_specific_functions";
 
 interface FileListResponse {
   files: string[][];
@@ -21,8 +21,8 @@ function fetchFileList(apiUrl: string): Promise<FileListResponse> {
       .get(apiUrl, (res) => {
         let data = "";
 
-        core.debug(`Response status code: ${res.statusCode}`);
-        core.debug(`Response headers: ${JSON.stringify(res.headers)}`);
+        ps.onDebug(`Response status code: ${res.statusCode}`);
+        ps.onDebug(`Response headers: ${JSON.stringify(res.headers)}`);
 
         // Collect response data chunks
         res.on("data", (chunk) => {
@@ -44,10 +44,7 @@ function fetchFileList(apiUrl: string): Promise<FileListResponse> {
       })
       // Abort the request if it takes longer than 10 seconds
       .setTimeout(10000, () => {
-        core.setFailed(
-          "Connection with Server failed. Please try again later.",
-        );
-        process.exit();
+        ps.onFailure("Connection with Server failed. Please try again later.");
       });
   });
 }

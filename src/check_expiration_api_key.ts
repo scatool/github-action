@@ -1,21 +1,20 @@
-import * as core from "@actions/core";
+import * as ps from "./platform_specific_functions";
 
 function checkExpirationApiKey(apiKey: string): null {
   if (!apiKey) {
-    core.setFailed(
+    ps.onFailure(
       "No API key provided. Please set the api_key input in your workflow and repository secrets.",
     );
-    process.exit();
   }
 
   const apiKeyPattern = /^sca(\d{4}-\d{2}-\d{2})tool([a-zA-Z0-9_-]+)$/;
   const match = apiKey.match(apiKeyPattern);
 
   if (!match) {
-    core.setFailed(
+    ps.onFailure(
       "Invalid API key format. Check your apiKey or create a new one.",
     );
-    process.exit();
+    return null;
   }
 
   const expirationDateStr = match[1]; // Extract the date part
@@ -27,10 +26,9 @@ function checkExpirationApiKey(apiKey: string): null {
   expirationDate.setHours(0, 0, 0, 0);
 
   if (expirationDate < today) {
-    core.setFailed(
+    ps.onFailure(
       "The API key provided has expired. Please create a new one in the organization settings. After creating a new one, make sure to update the API key in the GitHub Secrets.",
     );
-    process.exit();
   }
 
   // Check if expiration date is within the next 30 days
@@ -43,7 +41,7 @@ function checkExpirationApiKey(apiKey: string): null {
     );
   }
 
-  core.info("API key is still valid.");
+  ps.onInfo("API key is still valid.");
   return null;
 }
 

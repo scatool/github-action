@@ -2,9 +2,9 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 
 /**
- * Recursively searches for specific file types in a folder, allowing exclusions.
+ * Post comment into a pull request.
  * @param message The message that should be posted as a comment.
- * @param fileTypes Array of file extensions to include (e.g., ['.txt', '.js'])
+ * @param foundFiles Array of found files that were uploaded.
  * @returns null
  */
 async function postComment(

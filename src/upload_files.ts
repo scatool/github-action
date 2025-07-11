@@ -3,9 +3,8 @@ import * as http from "node:http";
 import * as https from "node:https";
 import * as path from "node:path";
 import * as url from "node:url";
-import * as core from "@actions/core";
-import * as github from "@actions/github";
 import FormData from "form-data";
+import * as ps from "./platform_specific_functions";
 
 /**
  * Uploads files to the specified controller endpoint.
@@ -36,20 +35,17 @@ function uploadFiles(
       );
     }
 
-    form.append(
-      "repositoryName",
-      github.context.repo.owner + "/" + github.context.repo.repo,
-    );
-    form.append("refName", github.context.ref);
-    form.append("commitHash", github.context.sha);
-    form.append("projectId", core.getInput("project_id"));
-    form.append("apiKey", core.getInput("api_key"));
+    form.append("repositoryName", ps.getRepositoryName());
+    form.append("refName", ps.getRef());
+    form.append("commitHash", ps.getCommitHash());
+    form.append("projectId", ps.getProjectId());
+    form.append("apiKey", ps.getAPIKey());
 
     const requestOptions = {
       method: "POST",
       headers: {
         ...form.getHeaders(),
-        "API-Key": core.getInput("api_key"),
+        "API-Key": ps.getAPIKey(),
       },
     };
 

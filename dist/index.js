@@ -38711,17 +38711,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(7484));
+const ps = __importStar(__nccwpck_require__(4405));
 function checkExpirationApiKey(apiKey) {
     if (!apiKey) {
-        core.setFailed("No API key provided. Please set the api_key input in your workflow and repository secrets.");
-        process.exit();
+        ps.onFailure("No API key provided. Please set the api_key input in your workflow and repository secrets.");
     }
     const apiKeyPattern = /^sca(\d{4}-\d{2}-\d{2})tool([a-zA-Z0-9_-]+)$/;
     const match = apiKey.match(apiKeyPattern);
     if (!match) {
-        core.setFailed("Invalid API key format. Check your apiKey or create a new one.");
-        process.exit();
+        ps.onFailure("Invalid API key format. Check your apiKey or create a new one.");
+        return null;
     }
     const expirationDateStr = match[1]; // Extract the date part
     const expirationDate = new Date(expirationDateStr);
@@ -38730,8 +38729,7 @@ function checkExpirationApiKey(apiKey) {
     today.setHours(0, 0, 0, 0);
     expirationDate.setHours(0, 0, 0, 0);
     if (expirationDate < today) {
-        core.setFailed("The API key provided has expired. Please create a new one in the organization settings. After creating a new one, make sure to update the API key in the GitHub Secrets.");
-        process.exit();
+        ps.onFailure("The API key provided has expired. Please create a new one in the organization settings. After creating a new one, make sure to update the API key in the GitHub Secrets.");
     }
     // Check if expiration date is within the next 30 days
     const oneMonthFromNow = new Date();
@@ -38739,7 +38737,7 @@ function checkExpirationApiKey(apiKey) {
     if (expirationDate <= oneMonthFromNow) {
         console.warn(`Warning: API key will expire soon on ${expirationDateStr}. Consider renewing it to make sure your integration keeps running.`);
     }
-    core.info("API key is still valid.");
+    ps.onInfo("API key is still valid.");
     return null;
 }
 exports["default"] = checkExpirationApiKey;
@@ -38776,7 +38774,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(7484));
+const ps = __importStar(__nccwpck_require__(4405));
 /**A typescript funtion that gets a filelist and a list of list of filetypes.
  * It should check if at least one file is availbale to be uploaded and if the combinations of at least on filetype list is completly represented in the files.
  * If not it should let the action fail and inform the user what files are searched for.
@@ -38788,28 +38786,24 @@ const core = __importStar(__nccwpck_require__(7484));
 function checkUpload(fileList, fileTypes) {
     // Check if the file list is empty
     if (fileList.length === 0) {
-        core.setFailed("No files found to upload.");
-        process.exit();
+        ps.onFailure("No files found to upload.");
     }
     // Check if the file types list is empty
     if (fileTypes.length === 0) {
-        core.setFailed("Internal Error. Please check for update of action or contact us.");
-        process.exit();
+        ps.onFailure("Internal Error. Please check for update of action or contact us.");
     }
     // Check if no file is larger than the maximum file size
     const maxFileSize = 100 * 1024 * 1024; // 100 MB in bytes
     const oversizedFiles = fileList.filter((file) => (__nccwpck_require__(3024).statSync)(file).size > maxFileSize);
     if (oversizedFiles.length > 0) {
-        core.setFailed(`The following files are larger than the maximum file size of ${maxFileSize} bytes: ${oversizedFiles.join(", ")}`);
-        process.exit();
+        ps.onFailure(`The following files are larger than the maximum file size of ${maxFileSize} bytes: ${oversizedFiles.join(", ")}`);
     }
     // Check if the combinations of at least one filetype list is completely represented in the files
     const check_passed = fileTypes.some((fileTypeCombi) => fileTypeCombi.every((fileType) => fileList.some((file) => file.endsWith(fileType))));
     if (!check_passed) {
-        core.setFailed(`Not all necessary files are presen in the selected scope. Please ensure at least one combination of following types is included in the configured paths: \n${fileTypes.map((pair) => `[ ${pair.join(", ")} ]`).join("\n")}`);
-        process.exit();
+        ps.onFailure(`Not all necessary files are presen in the selected scope. Please ensure at least one combination of following types is included in the configured paths: \n${fileTypes.map((pair) => `[ ${pair.join(", ")} ]`).join("\n")}`);
     }
-    core.info("All checks passed.");
+    ps.onInfo("All checks passed.");
 }
 exports["default"] = checkUpload;
 
@@ -38848,7 +38842,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const http = __importStar(__nccwpck_require__(7067));
 const https = __importStar(__nccwpck_require__(4708));
 const url = __importStar(__nccwpck_require__(3136));
-const core = __importStar(__nccwpck_require__(7484));
+const ps = __importStar(__nccwpck_require__(4405));
 /**
  * Makes a GET request to the specified URL using HTTP or HTTPS based on the protocol.
  * @param {string} apiUrl - The URL to fetch data from.
@@ -38861,8 +38855,8 @@ function fetchFileList(apiUrl) {
         protocol
             .get(apiUrl, (res) => {
             let data = "";
-            core.debug(`Response status code: ${res.statusCode}`);
-            core.debug(`Response headers: ${JSON.stringify(res.headers)}`);
+            ps.onDebug(`Response status code: ${res.statusCode}`);
+            ps.onDebug(`Response headers: ${JSON.stringify(res.headers)}`);
             // Collect response data chunks
             res.on("data", (chunk) => {
                 data += chunk;
@@ -38883,8 +38877,7 @@ function fetchFileList(apiUrl) {
         })
             // Abort the request if it takes longer than 10 seconds
             .setTimeout(10000, () => {
-            core.setFailed("Connection with Server failed. Please try again later.");
-            process.exit();
+            ps.onFailure("Connection with Server failed. Please try again later.");
         });
     });
 }
@@ -38966,26 +38959,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = run;
-const core = __importStar(__nccwpck_require__(7484));
 const check_expiration_api_key_1 = __importDefault(__nccwpck_require__(4728));
 const check_upload_1 = __importDefault(__nccwpck_require__(419));
 const fetch_file_list_1 = __importDefault(__nccwpck_require__(8803));
 const find_files_1 = __importDefault(__nccwpck_require__(3736));
 const upload_files_1 = __importDefault(__nccwpck_require__(5998));
 const post_comment_1 = __importDefault(__nccwpck_require__(7707));
+const ps = __importStar(__nccwpck_require__(4405));
 async function run() {
     try {
         // Get the API URL from the action input
-        const fileListApiUrl = `${core.getInput("api_url")}integration/file-list`;
-        const fileUploadApiUrl = `${core.getInput("api_url")}integration/ci-triggered-upload`;
+        const fileListApiUrl = `${ps.getAPIURL()}integration/file-list`;
+        const fileUploadApiUrl = `${ps.getAPIURL()}integration/ci-triggered-upload`;
         //ensure that the node_modules folder is always excluded as this would lead to a large number of files being uploaded unwantedly
-        const excludedPaths = core
-            .getInput("excluded_paths")
+        const excludedPaths = ps
+            .getExcludedPaths()
             .split(",")
             .map((path) => path.trim());
         excludedPaths.push("node_modules/**");
+        ps.onInfo(`Excluded paths: ${excludedPaths.join(", ")}`);
         // Make sure the apiKey adhears to the apiKeyPattern and is not expired.
-        (0, check_expiration_api_key_1.default)(core.getInput("api_key"));
+        (0, check_expiration_api_key_1.default)(ps.getAPIKey());
         // Fetch file types from the API
         const fileGroups = await (0, fetch_file_list_1.default)(fileListApiUrl).then((response) => response.files);
         // Check the API response
@@ -38994,24 +38988,112 @@ async function run() {
         }
         // Get unique file types to easily search for the needed files
         const uniqueFileTypes = [...new Set(fileGroups.flat())];
-        core.info(`File types retrieved: ${uniqueFileTypes.join(", ")}`);
+        ps.onInfo(`File types retrieved: ${uniqueFileTypes.join(", ")}`);
         // Search the repository for matching files
-        const repositoryRoot = process.env.GITHUB_WORKSPACE || ".";
+        const repositoryRoot = ps.getRepositoryRoot();
         const foundFiles = await (0, find_files_1.default)(repositoryRoot, uniqueFileTypes, excludedPaths.join(","));
-        console.log("Found files, that will be uploaded:", foundFiles);
+        ps.onInfo("Found files, that will be uploaded:" + foundFiles);
         // Check files before upload
         (0, check_upload_1.default)(foundFiles, fileGroups);
         // Output the matched files
-        core.setOutput("files", JSON.stringify(foundFiles));
+        ps.onInfo("files:" + JSON.stringify(foundFiles));
         // Send matched files to the controller
         const controllerResponse = await (0, upload_files_1.default)(fileUploadApiUrl, foundFiles);
         await (0, post_comment_1.default)(controllerResponse, foundFiles);
-        core.info(`Controller Response: \n ${JSON.stringify(controllerResponse, null, 2).replace(/\\n/g, "\n")}`);
+        ps.onSuccess("", `Controller Response: \n ${JSON.stringify(controllerResponse, null, 2).replace(/\\n/g, "\n")}`);
     }
     catch (error) {
-        core.setFailed(`Action failed with error: ${error.message}`);
-        process.exit();
+        ps.onFailure(`Action failed with error: ${error.message}`);
     }
+}
+
+
+/***/ }),
+
+/***/ 4405:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.onFailure = onFailure;
+exports.onSuccess = onSuccess;
+exports.onInfo = onInfo;
+exports.onWarning = onWarning;
+exports.onDebug = onDebug;
+exports.getRepositoryName = getRepositoryName;
+exports.getRef = getRef;
+exports.getCommitHash = getCommitHash;
+exports.getProjectId = getProjectId;
+exports.getAPIKey = getAPIKey;
+exports.getAPIURL = getAPIURL;
+exports.getExcludedPaths = getExcludedPaths;
+exports.getRepositoryRoot = getRepositoryRoot;
+const core = __importStar(__nccwpck_require__(7484));
+const github = __importStar(__nccwpck_require__(3228));
+function onFailure(msg) {
+    core.setFailed(msg);
+    process.exit();
+}
+function onSuccess(msg, data) {
+    core.setOutput(msg, data);
+    process.exit();
+}
+function onInfo(msg) {
+    core.info(msg);
+}
+function onWarning(msg) {
+    core.warning(msg);
+}
+function onDebug(msg) {
+    core.debug(msg);
+}
+function getRepositoryName() {
+    return github.context.repo.owner + "/" + github.context.repo.repo;
+}
+function getRef() {
+    return github.context.ref;
+}
+function getCommitHash() {
+    return github.context.sha;
+}
+function getProjectId() {
+    return core.getInput("project_id");
+}
+function getAPIKey() {
+    return core.getInput("api_key");
+}
+function getAPIURL() {
+    return core.getInput("api_url");
+}
+function getExcludedPaths() {
+    return core.getInput("excluded_paths");
+}
+function getRepositoryRoot() {
+    return process.env.GITHUB_WORKSPACE || ".";
 }
 
 
@@ -39049,9 +39131,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(7484));
 const github = __importStar(__nccwpck_require__(3228));
 /**
- * Recursively searches for specific file types in a folder, allowing exclusions.
+ * Post comment into a pull request.
  * @param message The message that should be posted as a comment.
- * @param fileTypes Array of file extensions to include (e.g., ['.txt', '.js'])
+ * @param foundFiles Array of found files that were uploaded.
  * @returns null
  */
 async function postComment(message, foundFiles) {
@@ -39117,9 +39199,8 @@ const http = __importStar(__nccwpck_require__(7067));
 const https = __importStar(__nccwpck_require__(4708));
 const path = __importStar(__nccwpck_require__(6760));
 const url = __importStar(__nccwpck_require__(3136));
-const core = __importStar(__nccwpck_require__(7484));
-const github = __importStar(__nccwpck_require__(3228));
 const form_data_1 = __importDefault(__nccwpck_require__(6454));
+const ps = __importStar(__nccwpck_require__(4405));
 /**
  * Uploads files to the specified controller endpoint.
  * @param {string} controllerUrl - The URL to send the files to.
@@ -39136,16 +39217,16 @@ function uploadFiles(controllerUrl, filePaths) {
             form.append("files", fs.createReadStream(filePath), path.basename(filePath));
             form.append("paths", path.relative(process.cwd(), filePath).replace(/\\/g, "/"));
         }
-        form.append("repositoryName", github.context.repo.owner + "/" + github.context.repo.repo);
-        form.append("refName", github.context.ref);
-        form.append("commitHash", github.context.sha);
-        form.append("projectId", core.getInput("project_id"));
-        form.append("apiKey", core.getInput("api_key"));
+        form.append("repositoryName", ps.getRepositoryName());
+        form.append("refName", ps.getRef());
+        form.append("commitHash", ps.getCommitHash());
+        form.append("projectId", ps.getProjectId());
+        form.append("apiKey", ps.getAPIKey());
         const requestOptions = {
             method: "POST",
             headers: {
                 ...form.getHeaders(),
-                "API-Key": core.getInput("api_key"),
+                "API-Key": ps.getAPIKey(),
             },
         };
         const newUrl = new URL(controllerUrl);
