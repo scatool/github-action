@@ -8,6 +8,8 @@ function onFailure(msg: string): void {
 
 function onSuccess(msg: string, data: string): void {
   core.setOutput(msg, data);
+  core.info(msg);
+  core.info(data);
   process.exit();
 }
 

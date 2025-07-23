@@ -40188,6 +40188,8 @@ function onFailure(msg) {
 }
 function onSuccess(msg, data) {
     core.setOutput(msg, data);
+    core.info(msg);
+    core.info(data);
     process.exit();
 }
 function onInfo(msg) {

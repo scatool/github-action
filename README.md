@@ -51,7 +51,7 @@ jobs:
                 uses: actions/checkout@v2
 
             - name: Run SCA Tool Scan
-                uses: scatool/sca-tool-action@v0.4.1
+                uses: scatool/sca-tool-action@v0.4.3
                 with:
                     api_key: ${{ secrets.SCA_TOOL_API_KEY }}
                     project_id: 'aaaa-aaaa-aaaa-aaaa'
