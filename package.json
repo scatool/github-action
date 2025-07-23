@@ -1,7 +1,7 @@
 {
   "name": "sca-tool-action",
   "description": "Send your project to SCA Tool to get a full view of the status of your project without the need to manually start a scan.",
-  "version": "0.3.0",
+  "version": "0.4.1",
   "author": "SCA-Tool",
   "private": true,
   "homepage": "https://app.scatool.com",
