@@ -61,7 +61,7 @@ async function run(): Promise<void> {
     await postComment(controllerResponse, foundFiles);
 
     ps.onSuccess(
-      "",
+      "Success",
       `Controller Response: \n ${JSON.stringify(controllerResponse, null, 2).replace(/\\n/g, "\n")}`,
     );
   } catch (error) {

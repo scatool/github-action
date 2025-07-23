@@ -40118,7 +40118,7 @@ async function run() {
         // Send matched files to the controller
         const controllerResponse = await (0, upload_files_1.default)(fileUploadApiUrl, foundFiles);
         await (0, post_comment_1.default)(controllerResponse, foundFiles);
-        ps.onSuccess("", `Controller Response: \n ${JSON.stringify(controllerResponse, null, 2).replace(/\\n/g, "\n")}`);
+        ps.onSuccess("Success", `Controller Response: \n ${JSON.stringify(controllerResponse, null, 2).replace(/\\n/g, "\n")}`);
     }
     catch (error) {
         ps.onFailure(`Action failed with error: ${error.message}`);
