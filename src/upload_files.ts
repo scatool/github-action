@@ -54,7 +54,7 @@ function uploadFiles(
     const req = protocol.request(
       {
         hostname: newUrl.hostname,
-        port: newUrl.port || 80,
+        port: newUrl.port || (protocol === https ? 443 : 80),
         path: newUrl.pathname,
         method: requestOptions.method,
         headers: requestOptions.headers,
